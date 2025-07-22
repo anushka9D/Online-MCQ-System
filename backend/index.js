@@ -10,6 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 //Route
+app.use("/users",require("./routes/userRoutes"));
 
 //Database Connection
 mongoose.connect(process.env.MONGO_URI)
