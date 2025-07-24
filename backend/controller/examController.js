@@ -43,9 +43,23 @@ exports.getAllExams = async (req, res) => {
   }
 };
 
+// Get exam by id
+exports.getExamById = async (req, res) => {
+  try {
+    const {examId} = req.params;
+
+    const exam = await Exam.findById(examId);
+
+    res.json(exam);
+
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to fetch exams.' });
+  }
+};
+
 // Get questions for a specific exam
 exports.getQuestionsByExamId = async (req, res) => {
-  const { examId } = req.params;
+  const  {examId}  = req.params;
   try {
     const questions = await Question.find({ exam_id: examId });
     res.json(questions);
@@ -57,7 +71,7 @@ exports.getQuestionsByExamId = async (req, res) => {
 
 // Delete Exam with Questions
 exports.deleteExamWithQuestions = async (req, res) => {
-  const { examId } = req.params;
+  const {examId} = req.params;
 
   try {
     await Question.deleteMany({ exam_id: examId });

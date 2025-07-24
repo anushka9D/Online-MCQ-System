@@ -3,11 +3,14 @@ import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { BookOpen, Clock, Users, PlayCircle, BarChart3, Eye } from 'lucide-react';
 import '../css/UserDashboard.css';
+import { useNavigate } from 'react-router-dom';
 
 const UserDashboard = () => {
 const [particles, setParticles] = useState([]);
-const { id, name } = useParams();
+const { userid, name } = useParams();
 const [examPapers, setExamPapers] = useState([]);
+
+const navigate = useNavigate();
 
   useEffect(() => {
     const newParticles = [];
@@ -80,9 +83,8 @@ useEffect(() => {
     }
   };
 
-  const handleAttemptQuiz = (paperId) => {
-    console.log(`Attempting quiz with ID: ${paperId}`);
-    // quiz attempt
+  const handleAttemptQuiz = (paperid) => {
+    navigate(`/exam/${paperid}/${userid}`);
   };
 
   const handleViewResult = (resultId) => {
@@ -181,7 +183,7 @@ useEffect(() => {
                   
                   <button 
                     className="attempt-btn"
-                    onClick={() => handleAttemptQuiz(paper.id)}>
+                    onClick={() => handleAttemptQuiz(paper._id)}>
                     <PlayCircle className="icon-md" />
                     Attempt Quiz
                   </button>
