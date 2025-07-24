@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import axios from 'axios';
 import { BookOpen, Clock, Users, PlayCircle, BarChart3, Eye } from 'lucide-react';
 import '../css/UserDashboard.css';
 
 const UserDashboard = () => {
 const [particles, setParticles] = useState([]);
-const { id, name } = useParams(); 
+const { id, name } = useParams();
+const [examPapers, setExamPapers] = useState([]);
 
   useEffect(() => {
     const newParticles = [];
@@ -34,27 +36,19 @@ const { id, name } = useParams();
   }, []);
 
 
-  // Sample exam papers data
-  const examPapers = [
-    {
-      id: 1,
-      title: "Advanced Mathematics - Calculus & Algebra",
-      description: "Comprehensive test covering differential calculus, integral calculus, linear algebra, and complex numbers. Perfect for engineering entrance exams.",
-      image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=400&h=200&fit=crop"
-    },
-    {
-      id: 2,
-      title: "English Literature & Grammar",
-      description: "Test your knowledge of classic literature, poetry analysis, grammar rules, and comprehension skills. Ideal for competitive exams.",
-      image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=200&fit=crop"
-    },
-    {
-      id: 3,
-      title: "General Science - Physics & Chemistry",
-      description: "Explore fundamental concepts in physics and chemistry including mechanics, thermodynamics, organic chemistry, and periodic table.",
-      image: "https://images.unsplash.com/photo-1554475901-4538ddfbccc2?w=400&h=200&fit=crop"
+// Get all exam
+  const fetchExams = async () => {
+    try {
+      const response = await axios.get("http://localhost:8090/exams/");
+      setExamPapers(response.data);
+    } catch (error) {
+      console.error("Failed to fetch exam papers:", error);
     }
-  ];
+  };
+
+useEffect(() => {
+  fetchExams();
+}, []);
 
   // Sample results history
   const resultsHistory = [
@@ -74,14 +68,7 @@ const { id, name } = useParams();
     }
   ];
 
-  const getDifficultyClass = (difficulty) => {
-    switch(difficulty) {
-      case 'easy': return 'difficulty-easy';
-      case 'medium': return 'difficulty-medium';
-      case 'hard': return 'difficulty-hard';
-      default: return 'difficulty-medium';
-    }
-  };
+
 
   const getScoreClass = (status) => {
     switch(status) {
@@ -132,8 +119,8 @@ const { id, name } = useParams();
                 width: `${particle.size}px`,
                 height: `${particle.size}px`,
                 opacity: particle.opacity
-                }}
-            />
+                }}/>
+            
             ))}
             
             {/* Geometric Shapes */}
@@ -169,10 +156,10 @@ const { id, name } = useParams();
             {examPapers.map((paper) => (
               <div key={paper.id} className="paper-card">
                 <img 
-                  src={paper.image} 
+                  src="https://assets.goodfirms.co/blog/general/1566798061-exam-online.jpg"
                   alt={paper.title}
-                  className="paper-image"
-                />
+                  className="paper-image"/>
+
                 <div className="paper-content">
                   <h3 className="paper-title">{paper.title}</h3>
                   <p className="paper-description">{paper.description}</p>
@@ -194,8 +181,7 @@ const { id, name } = useParams();
                   
                   <button 
                     className="attempt-btn"
-                    onClick={() => handleAttemptQuiz(paper.id)}
-                  >
+                    onClick={() => handleAttemptQuiz(paper.id)}>
                     <PlayCircle className="icon-md" />
                     Attempt Quiz
                   </button>
