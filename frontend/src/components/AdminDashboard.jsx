@@ -423,7 +423,7 @@ const handleLogout = () => {
                     </div>
                     <div className="paper-info">
                       <Clock className="icon-sm" />
-                      <span>20 min</span>
+                      <span>10 min</span>
                     </div>
                     <div className="paper-info">
                       <Users className="icon-sm" />

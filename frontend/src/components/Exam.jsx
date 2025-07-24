@@ -224,14 +224,14 @@ const Exam = () => {
         {currentQ && (
           <div className="question-container">
             <div className="question-card">
-              <div className="question-header">
-                <h2 className="question-number">Question {currentQuestion + 1}</h2>
+              <div className="exam-question-header">
+                <h2 className="exam-question-number">Question {currentQuestion + 1}</h2>
                 {answers[currentQ._id] && (
                   <CheckCircle className="icon-sm answered-icon" />
                 )}
               </div>
               
-              <div className="question-text">
+              <div className="exam-question-text">
                 {currentQ.question_text}
               </div>
               
@@ -239,7 +239,7 @@ const Exam = () => {
                 {currentQ.options.map((option, index) => (
                   <label 
                     key={index}
-                    className={`option-label ${
+                    className={`exam-option-label ${
                       answers[currentQ._id] === option ? 'selected' : ''
                     }`}>
                   

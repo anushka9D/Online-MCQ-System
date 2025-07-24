@@ -211,7 +211,7 @@ const Result = () => {
             {ResultData.answers.map((answer, index) => (
               <div 
                 key={index}
-                className={`question-card ${answer.is_correct ? 'correct' : 'incorrect'}`}
+                className={`result-question-card ${answer.is_correct ? 'correct' : 'incorrect'}`}
               >
                 <div className="question-content">
                   <div className={`question-status ${answer.is_correct ? 'correct' : 'incorrect'}`}>

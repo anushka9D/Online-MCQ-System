@@ -185,7 +185,7 @@ return (
 
           {/* Scroll Indicator */}
           <div className="scroll-indicator">
-            <ArrowDown className="icon-lg" style={{color: 'rgba(255, 255, 255)'}} />
+            <ArrowDown className="scroll-indicator-icon-lg" style={{color: 'rgba(255, 255, 255)'}} />
           </div>
         </div>
       </section>

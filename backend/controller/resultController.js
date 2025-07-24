@@ -56,19 +56,19 @@ exports.getResultById = async (req, res) => {
   try {
     const { result_id } = req.params;
 
-    // 1. Find the result and populate user & exam
+    // Find the result and populate user & exam
     const result = await Result.findById(result_id)
-      .populate('user_id', 'name') // get user name
-      .populate('exam_id', 'title'); // get exam title
+      .populate('user_id', 'name')
+      .populate('exam_id', 'title');
 
     if (!result) {
       return res.status(404).json({ message: 'Result not found', result_id });
     }
 
-    // 2. Get all answers linked to this result
+    // Get all answers linked to this result
     const answers = await Answer.find({ result_id });
 
-    // 3. Get all questions for this exam
+    // Get all questions for this exam
     const questions = await Question.find({ exam_id: result.exam_id._id });
 
     // Create a map of questions
@@ -77,7 +77,7 @@ exports.getResultById = async (req, res) => {
       questionMap[q._id.toString()] = q;
     });
 
-    // 4. Build detailed answer feedback
+    // answer feedback
     const detailedAnswers = answers.map(answer => {
       const question = questionMap[answer.question_id.toString()];
       if (!question) {
@@ -99,7 +99,7 @@ exports.getResultById = async (req, res) => {
       };
     });
 
-    // 5. Calculate score metrics
+    //Calculate score metrics
     const totalQuestions = questions.length;
     const score = result.score;
     const incorrectAnswers = totalQuestions - score;
@@ -111,7 +111,7 @@ exports.getResultById = async (req, res) => {
     else if (percentage >= 60) grade = 'C';
     else grade = 'F';
 
-    // 6. Return enriched result data
+    // Return 
     res.status(200).json({
       result_id: result._id,
       user: {
@@ -134,6 +134,61 @@ exports.getResultById = async (req, res) => {
 
   } catch (error) {
     console.error('Error getting result by ID:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+
+exports.getResultsByUserId = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+
+    const results = await Result.find({ user_id }).populate('exam_id', 'title');
+
+    if (!results.length) {
+      return res.status(404).json({ message: 'No results found for this user.' });
+    }
+
+
+    const formattedResults = await Promise.all(
+      results.map(async (result) => {
+        const questions = await Question.find({ exam_id: result.exam_id._id });
+        const totalQuestions = questions.length || 1;
+        const percentage = ((result.score / totalQuestions) * 100).toFixed(2);
+
+        return {
+          result_id: result._id,
+          score: result.score,
+          percentage,
+          date: result.timestamp,
+          exam_title: result.exam_id.title
+        };
+      })
+    );
+
+    res.status(200).json({ results: formattedResults });
+
+  } catch (error) {
+    console.error('Error getting results by user ID:', error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+exports.getResultCountByUserId = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+    // Count results for the user
+    const resultCount = await Result.countDocuments({ user_id });
+
+    res.status(200).json({
+      user_id,
+      total_results: resultCount
+    });
+
+  } catch (error) {
+    console.error('Error counting results for user:', error);
     res.status(500).json({ message: 'Server Error' });
   }
 };

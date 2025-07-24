@@ -9,6 +9,8 @@ const UserDashboard = () => {
 const [particles, setParticles] = useState([]);
 const { userid, name } = useParams();
 const [examPapers, setExamPapers] = useState([]);
+const [resultsHistory, setResults] = useState([]);
+const [Examcount, setCount] = useState(0);
 
 const navigate = useNavigate();
 
@@ -53,43 +55,43 @@ useEffect(() => {
   fetchExams();
 }, []);
 
-  // Sample results history
-  const resultsHistory = [
-    {
-      id: 1,
-      examName: "Advanced Mathematics - Calculus & Algebra",
-      score: 42,
-      percentage: 84,
-      date: "2024-01-15"
-    },
-    {
-      id: 2,
-      examName: "English Literature & Grammar",
-      score: 32,
-      percentage: 80,
-      date: "2024-01-12"
-    }
-  ];
+  // results history
+    const fetchResults = async () => {
+    try {
+      const response = await axios.get(`http://localhost:8090/results/user/${userid}`);
+      setResults(response.data.results);
 
-
-
-  const getScoreClass = (status) => {
-    switch(status) {
-      case 'excellent': return 'score-excellent';
-      case 'good': return 'score-good';
-      case 'average': return 'score-average';
-      case 'poor': return 'score-poor';
-      default: return 'score-average';
+    } catch (error) {
+      console.error("Failed to fetch exam papers:", error);
     }
   };
+
+useEffect(() => {
+  fetchResults();
+}, []);
+
+
+// get Completed Exam count
+  useEffect(() => {
+    const fetchCount = async () => {
+      try {
+        const res = await axios.get(`http://localhost:8090/results/count/${userid}`);
+        setCount(res.data.total_results);
+      } catch (err) {
+        console.error('Failed to fetch result count:', err);
+      }
+    };
+
+    fetchCount();
+  }, [userid]);
+
 
   const handleAttemptQuiz = (paperid) => {
     navigate(`/exam/${paperid}/${userid}`);
   };
 
   const handleViewResult = (resultId) => {
-    console.log(`Viewing result with ID: ${resultId}`);
-    // view result 
+    navigate(`/exam_result/${resultId}/${userid}`);
   };
 
   const formatDate = (dateString) => {
@@ -140,8 +142,8 @@ useEffect(() => {
             </div>
             <div className="user-stats">
               <div className="stat-item">
-                <span className="stat-number">1</span>
-                <span className="stat-label">Completed</span>
+                <span className="stat-number">{Examcount}</span>
+                <span className="stat-label">Completed Exam</span>
               </div>
             </div>
           </div>
@@ -173,7 +175,7 @@ useEffect(() => {
                     </div>
                     <div className="paper-info">
                       <Clock className="icon-sm" />
-                      <span>20 min</span>
+                      <span>10 min</span>
                     </div>
                     <div className="paper-info">
                       <Users className="icon-sm" />
@@ -213,14 +215,12 @@ useEffect(() => {
               </thead>
               <tbody>
                 {resultsHistory.map((result) => (
-                  <tr key={result.id}>
+                  <tr key={result.result_id}>
                     <td>
-                      <div className="exam-name">{result.examName}</div>
+                      <div className="exam-name">{result.exam_title}</div>
                     </td>
                     <td>
-                      <span className={`score-badge ${getScoreClass(result.status)}`}>
-                        {result.score}/{result.totalQuestions}
-                      </span>
+                      <span className="score-badge">{result.score}</span>
                     </td>
                     <td>
                       <strong>{result.percentage}%</strong>
@@ -231,7 +231,7 @@ useEffect(() => {
                     <td>
                       <button 
                         className="view-btn"
-                        onClick={() => handleViewResult(result.id)}
+                        onClick={() => handleViewResult(result.result_id)}
                       >
                         <Eye className="icon-sm" />
                         View Details

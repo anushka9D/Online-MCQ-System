@@ -276,7 +276,7 @@
 }
 
 /* Question Cards */
-.question-card {
+.result-question-card {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(20px);
   border-radius: 1rem;
@@ -286,16 +286,16 @@
   cursor: pointer;
 }
 
-.question-card:hover {
+.result-question-card:hover {
   background: rgba(255, 255, 255, 0.15);
   transform: scale(1.02);
 }
 
-.question-card.correct {
+.result-question-card.correct {
   border-left-color: #10b981;
 }
 
-.question-card.incorrect {
+.result-question-card.incorrect {
   border-left-color: #ef4444;
 }
 
