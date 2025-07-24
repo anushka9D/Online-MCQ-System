@@ -171,7 +171,7 @@ return (
           </div>
 
           {/* Stats */}
-          <div className="stats-grid animate-fade-in-up animation-delay-800">
+          <div className="home-stats-grid animate-fade-in-up animation-delay-800">
             {stats.map((stat, index) => (
               <div key={index} className="stat-item">
                 <div className="stat-icon">

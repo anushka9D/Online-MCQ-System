@@ -174,7 +174,7 @@ const updateOption = (questionIndex, optionIndex, value) => {
 
 // Logout function
 const handleLogout = () => {
-  window.location.href = '/login';
+  window.location.href = '/';
 };
 
 

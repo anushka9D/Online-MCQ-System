@@ -224,7 +224,7 @@ body {
 }
 
 /* Stats */
-.stats-grid {
+.home-stats-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 2rem;
@@ -686,7 +686,7 @@ body {
     font-size: 1.875rem;
   }
   
-  .stats-grid {
+  .home-stats-grid {
     grid-template-columns: repeat(4, 1fr);
   }
   

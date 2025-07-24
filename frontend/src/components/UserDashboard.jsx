@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import { BookOpen, Clock, Users, PlayCircle, BarChart3, Eye } from 'lucide-react';
+import { BookOpen, Clock, Users, PlayCircle, BarChart3, Eye, LogOut } from 'lucide-react';
 import '../css/UserDashboard.css';
 import { useNavigate } from 'react-router-dom';
 
@@ -103,6 +103,11 @@ useEffect(() => {
     });
   };
 
+  // Logout function
+  const handleLogout = () => {
+    window.location.href = '/';
+  };
+
   return (
     <div className="dashboard">
       <div className="dashboard-container">
@@ -146,6 +151,13 @@ useEffect(() => {
                 <span className="stat-label">Completed Exam</span>
               </div>
             </div>
+            <button 
+              className="logout-btn"
+              onClick={handleLogout}
+              title="Logout">
+              <LogOut className="icon-sm" />
+              Logout
+            </button>
           </div>
         </div>
 
