@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { BookOpen, Clock, Users, Trash, Plus, X } from 'lucide-react';
+import { BookOpen, Clock, Users, Trash, Plus, X, LogOut } from 'lucide-react';
 import '../css/AdminDashboard.css';
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -40,7 +40,7 @@ const [questions, setQuestions] = useState([{ question_text: '', options: ['', '
   }, []);
 
 // Get all exam
-useEffect(() => {
+
   const fetchExams = async () => {
     try {
       const response = await axios.get("http://localhost:8090/exams/");
@@ -50,14 +50,47 @@ useEffect(() => {
     }
   };
 
+useEffect(() => {
   fetchExams();
 }, []);
 
+
 // delete Quiz
-const handleDeleteQuiz = (paperId) => {
-    console.log(`Attempting quiz with ID: ${paperId}`);
-    // quiz attempt
+const handleDeleteQuiz = async (exampaperId) => {
+    const result = await Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!"
+    });
+
+    if(!result.isConfirmed) return;
+
+  try {
+
+    await axios.delete(`http://localhost:8090/exams/${exampaperId}`);
+
+     Swal.fire({
+      icon: "success",
+      title: "Deleted!",
+      text: "The quiz has been deleted.",
+    });
+
+    fetchExams();
+
+  } catch (error) {
+    console.error('Error deleting quiz:', error.message);
+    Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!"
+        });
+  }
 };
+
 
 // Add exam 
 const handleAddExam = async (e) => {
@@ -138,6 +171,13 @@ const updateOption = (questionIndex, optionIndex, value) => {
   setQuestions(updated);
 };
 
+
+// Logout function
+const handleLogout = () => {
+  window.location.href = '/login';
+};
+
+
   return (
     <div className="dashboard">
       <div className="dashboard-container">
@@ -173,8 +213,15 @@ const updateOption = (questionIndex, optionIndex, value) => {
           <div className="header-content">
             <div className="welcome-section">
               <h1>Welcome back, Admin</h1>
-              <p>Manage your System</p>
+              <p>Let’s keep things organized! Manage quizzes and questions with ease.</p>
             </div>
+              <button 
+                className="logout-btn"
+                onClick={handleLogout}
+                title="Logout">
+                <LogOut className="icon-sm" />
+                Logout
+              </button>
           </div>
         </div>
 
@@ -386,7 +433,7 @@ const updateOption = (questionIndex, optionIndex, value) => {
                   
                   <button 
                     className="deleteQuiz-btn"
-                    onClick={() => handleDeleteQuiz(paper.id)}>
+                    onClick={() => handleDeleteQuiz(paper._id)}>
                     <Trash  className="icon-md" />
                     Delete Quiz
                   </button>
