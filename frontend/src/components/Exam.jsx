@@ -162,7 +162,6 @@ const Exam = () => {
   return (
     <div className="dashboard">
       <div className="dashboard-container">
-        {/* Background Effects */}
 
         {/* Exam Header */}
         <div className="exam-header">
