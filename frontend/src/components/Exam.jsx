@@ -78,6 +78,23 @@ const Exam = () => {
   // Submit exam
   const handleSubmitExam = async () => {
     if (isSubmitting) return;
+
+    // Check for unanswered questions
+    const unansweredQuestions = questions.filter(q => !answers[q._id]);
+
+    if (unansweredQuestions.length > 0) {
+        Swal.fire({
+        icon: 'warning',
+        title: 'Incomplete Exam',
+        text: `You have ${unansweredQuestions.length} unanswered question(s). Please answer all before submitting.`,
+        });
+
+        // Scroll to the first unanswered question
+        const firstUnansweredIndex = questions.findIndex(q => !answers[q._id]);
+        setCurrentQuestion(firstUnansweredIndex);
+
+        return;
+    }
     
     setIsSubmitting(true);
     
@@ -89,7 +106,6 @@ const Exam = () => {
         timestamp: new Date()
       };
 
-      // Submit results to backend
       const response = await axios.post('http://localhost:8090/results/', examResult);
       
       const { result_id } = response.data;
@@ -182,8 +198,8 @@ const Exam = () => {
           <div className="progress-bar">
             <div 
               className="progress-fill" 
-              style={{ width: `${progress}%` }}
-            ></div>
+              style={{ width: `${progress}%` }}>
+            </div>
           </div>
           <span className="progress-text">
             Question {currentQuestion + 1} of {questions.length}
@@ -198,8 +214,8 @@ const Exam = () => {
               className={`nav-dot ${index === currentQuestion ? 'active' : ''} ${
                 answers[questions[index]._id] ? 'answered' : ''
               }`}
-              onClick={() => goToQuestion(index)}
-            >
+              onClick={() => goToQuestion(index)}>
+            
               {index + 1}
             </button>
           ))}
@@ -226,15 +242,15 @@ const Exam = () => {
                     key={index}
                     className={`option-label ${
                       answers[currentQ._id] === option ? 'selected' : ''
-                    }`}
-                  >
+                    }`}>
+                  
                     <input
                       type="radio"
                       name={`question-${currentQ._id}`}
                       value={option}
                       checked={answers[currentQ._id] === option}
-                      onChange={() => handleAnswerSelect(currentQ._id, option)}
-                    />
+                      onChange={() => handleAnswerSelect(currentQ._id, option)}/>
+                    
                     <span className="option-letter">
                       {String.fromCharCode(65 + index)}
                     </span>
@@ -251,8 +267,8 @@ const Exam = () => {
           <button 
             className="control-btn prev-btn"
             onClick={prevQuestion}
-            disabled={currentQuestion === 0}
-          >
+            disabled={currentQuestion === 0}>
+          
             Previous
           </button>
           
@@ -261,15 +277,14 @@ const Exam = () => {
               <button 
                 className="control-btn submit-btn"
                 onClick={handleSubmitExam}
-                disabled={isSubmitting}
-              >
+                disabled={isSubmitting}>
+
                 {isSubmitting ? 'Submitting...' : 'Submit Exam'}
               </button>
             ) : (
               <button 
                 className="control-btn next-btn"
-                onClick={nextQuestion}
-              >
+                onClick={nextQuestion}>
                 Next
               </button>
             )}
