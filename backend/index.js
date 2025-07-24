@@ -11,6 +11,7 @@ app.use(express.json());
 
 //Route
 app.use("/users",require("./routes/userRoutes"));
+app.use("/exams",require("./routes/examRoutes"));
 
 //Database Connection
 mongoose.connect(process.env.MONGO_URI)
