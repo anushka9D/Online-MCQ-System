@@ -76,11 +76,19 @@ function Login() {
                 });
 
         setTimeout(() => {
-           navigate(`/user_dashboard/${data.user.id}/${data.user.name}`);
+           if(data.user.role === "admin"){
+              navigate('/admin_dashboard')
+           }
+           else{
+              navigate(`/user_dashboard/${data.user.id}/${data.user.name}`);
+           }
+
         }, 2000);
+
       } else {
         throw new Error('Invalid credentials');
       }
+
     } catch (err) {
       setError('Login failed. Please check your credentials and try again.');
       Swal.fire({
